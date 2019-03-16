@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include <resolv.h>
 #include <unistd.h>
