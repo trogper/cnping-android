@@ -206,7 +206,7 @@ void CNFGClearFrame()
 {
 	int i, m;
 	uint32_t col = 0;
-	short x, y;
+	short x = bufferx, y = buffery;
 
 	m = x * y;
 	col = CNFGColor( CNFGBGColor );
