@@ -5,11 +5,14 @@
     android:versionName="1.0" >
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:allowBackup="true" >
+        android:allowBackup="true"
+        android:label="CNPing"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round" >
         <activity
             android:name="com.viknet.cnping.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:label="com.viknet.cnping" >
+            android:label="CNPing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
