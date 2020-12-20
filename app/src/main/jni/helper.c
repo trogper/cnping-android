@@ -76,7 +76,7 @@ int main(int argc, char const *argv[])
 
     int sd = socket(PF_INET, SOCK_RAW, ICMP_PROTO_NUMBER);
     if (sd < 0){
-        ERROR("Socket creation error: %d",errno);
+        ERROR("Socket creation error: %d", errno);
         exit(-1);
     }
     if (setsockopt(sd, SOL_IP, IP_TTL, &val, sizeof(val)) != 0){
@@ -101,12 +101,10 @@ int main(int argc, char const *argv[])
         ERROR("Set TTL failed: %d", errno);
         exit(-1);
     }
-
     if (fcntl(sd, F_SETFL, O_NONBLOCK) != 0){
         ERROR("Set O_NONBLOCK failed: %d", errno);
         exit(-1);
     }
-
     if (!send_sd(ufd, sd)){
         ERROR("Listen socket send error: %d", errno);
         exit(-1);

@@ -29,11 +29,12 @@ public class MainActivity extends Activity {
 		protected void onPostExecute(Boolean result) {
 			if (result) return;
 
-			new AlertDialog.Builder(MainActivity.this).setTitle("Error").setMessage("Cannot get sockets with su.").setPositiveButton("OK",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-					}}).create().show();
+			new AlertDialog.Builder(MainActivity.this)
+					.setTitle("Error")
+					.setMessage("Cannot get sockets with su.")
+					.setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
+					.create()
+					.show();
 		}
 	}
 
@@ -57,36 +58,33 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		tv = (EditText) findViewById(R.id.textHostname);
-		goButton = ((Button)findViewById(R.id.goButton));
+		goButton = (Button) findViewById(R.id.goButton);
 		new SuSocketsRequest().execute();
 
-		tv.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE))
-					hideKeyboard();
-				return false;
-			}
+		tv.setOnEditorActionListener((v, actionId, event) -> {
+			if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE))
+				hideKeyboard();
+			return false;
 		});
 
-		goButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				if(!isRunning){
-					if (startPing(tv.getText().toString())){
-						hideKeyboard();
-						((Button)v).setText("STOP");
-						isRunning = true;
-					} else {
-						new AlertDialog.Builder(MainActivity.this).setTitle("Error").setMessage("Ping error.").setPositiveButton("OK",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int id) {
-									dialog.dismiss();
-								}}).create().show();
-					}
+		goButton.setOnClickListener(view -> {
+			if(!isRunning){
+				if (startPing(tv.getText().toString())){
+					hideKeyboard();
+					((Button)view).setText("STOP");
+					isRunning = true;
 				} else {
-					stopPing();
-					((Button)v).setText("GO");
-					isRunning = false;
+					new AlertDialog.Builder(MainActivity.this)
+							.setTitle("Error")
+							.setMessage("Ping error.")
+							.setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
+							.create()
+							.show();
 				}
+			} else {
+				stopPing();
+				((Button)view).setText("GO");
+				isRunning = false;
 			}
 		});
 	}

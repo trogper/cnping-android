@@ -119,19 +119,19 @@ extern "C" {
     int retval = system("su -c /data/data/com.viknet.cnping/lib/libhelper.so");
     INFO("Helper exit: %d", retval);
 
-    if (retval != 0){
+    if (retval != 0) {
       ERROR("Helper failed.");
       return false;
     }
 
     ping_socket = read_sd(ufd);
-    if (ping_socket < 0){
+    if (ping_socket < 0) {
       ERROR("Ping socket retreival failed");
       return false;
     }
 
     listen_socket = read_sd(ufd);
-    if (listen_socket < 0){
+    if (listen_socket < 0) {
       ERROR("Listen socket retreival failed");
       return false;
     }
