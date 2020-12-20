@@ -6,7 +6,8 @@ exec {
 
 android {
 	compileSdkVersion 27
-	buildToolsVersion "28.0.3"
+	buildToolsVersion "29.0.2"
+	ndkVersion "22.0.7026061"
 
 	defaultConfig {
 		applicationId "com.viknet.cnping"
