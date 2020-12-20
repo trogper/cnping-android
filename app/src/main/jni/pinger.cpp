@@ -65,7 +65,7 @@ int read_sd(int ufd){
 
 extern "C" {
 
-  JNIEXPORT jboolean JNICALL Java_com_viknet_cnping_MainActivity_requestSockets(JNIEnv *env, jobject obj){
+  JNIEXPORT jboolean JNICALL Java_com_viknet_cnping_MainActivity_requestSockets(JNIEnv *env, jclass obj){
     
     if (ping_socket>=0){
       close(ping_socket);
@@ -86,35 +86,20 @@ extern "C" {
     bind(ufd, (struct sockaddr*)&addr, sizeof(addr));
     //su --context u:r:system_app:s0 -c
 
-    FILE *se_file = fopen("/sys/fs/selinux/enforce", "r");
-    if (se_file){
-      char is_enforced = 0;
-      if (!fread(&is_enforced, 1, 1, se_file))
-        ERROR("Error reading \"/sys/fs/selinux/enforce\" file");
-      fclose(se_file);
+    INFO("SELinux assumed enforced. Patching policies.");
+    char buf[80];
+    FILE *fp = NULL;
 
-      if (is_enforced == '1'){
-        INFO("SELinux enforced. Patching policies.");
-        char buf[80];
-        FILE *fp = NULL;
-        if ((fp = popen("su -c 'supolicy --live \"allow untrusted_app { init supersu } rawip_socket { read write }\"'", "r")) == NULL)
-          ERROR("Error launching supolicy!\n")
-        else {
-          while (fgets(buf, 80, fp) != NULL)
-            INFO("OUTPUT: %s", buf);
-          pclose(fp);
-        }
-        // if ((fp = popen("su -c 'supolicy --live \"allow untrusted_app supersu rawip_socket { read write }\"'", "r")) == NULL)
-        //   ERROR("Error launching supolicy!\n")
-        // else {
-        //   while (fgets(buf, 80, fp) != NULL)
-        //     INFO("OUTPUT: %s", buf);
-        //   pclose(fp);
-        // }
-      } else
-        INFO("SELinux is not enforced.");
-    } else
-      INFO("SELinux not found");
+    // 27 probably means targetSdkVersion or compileSdkVersion
+    if ((fp = popen("su -c 'supolicy --live \"allow { untrusted_app untrusted_app_27} { init supersu magisk } rawip_socket { read write }\"'", "r")) == NULL) {
+      ERROR("Error launching supolicy!\n")
+      return false;
+    } else {
+      while (fgets(buf, 80, fp) != NULL)
+        INFO("OUTPUT: %s", buf);
+      pclose(fp);
+    }
+
 
     int retval = system("su -c /data/data/com.viknet.cnping/lib/libhelper.so");
     INFO("Helper exit: %d", retval);
@@ -141,7 +126,7 @@ extern "C" {
     return true;
   }
 
-  JNIEXPORT jboolean JNICALL Java_com_viknet_cnping_MainActivity_startPing(JNIEnv *env, jobject obj, jstring jhostname){
+  JNIEXPORT jboolean JNICALL Java_com_viknet_cnping_MainActivity_startPing(JNIEnv *env, jclass obj, jstring jhostname){
     if (ping_socket < 0 || listen_socket < 0)
       return false;
 
@@ -164,11 +149,11 @@ extern "C" {
     return true;
   }
 
-  JNIEXPORT void JNICALL Java_com_viknet_cnping_MainActivity_stopPing(JNIEnv *env, jobject obj){
+  JNIEXPORT void JNICALL Java_com_viknet_cnping_MainActivity_stopPing(JNIEnv *env, jclass obj){
     is_running = false;
   }
 
-  JNIEXPORT void JNICALL Java_com_viknet_cnping_PingImageView_drawFrame(JNIEnv *env, jobject ob, jobject bitmap){
+  JNIEXPORT void JNICALL Java_com_viknet_cnping_PingImageView_drawFrame(JNIEnv *env, jclass ob, jobject bitmap){
     AndroidBitmapInfo info;
     void* pixels;
     int ret;
